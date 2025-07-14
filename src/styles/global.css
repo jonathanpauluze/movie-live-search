@@ -1,14 +1,29 @@
 :root {
-  font-family: 'Work Sans', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --color-primary-base: #0092ff;
+  --color-primary-softest: #e1f2ff;
+  --color-primary-icon: #006eff;
+  --color-neutral: #616161;
+  --color-neutral-soft: #8e8e8e;
+  --color-neutral-hover: #d2d2d2;
+  --color-text: #464646;
+  --color-text-neutral: #333333;
+  --color-warning: #fdb022;
+  --font-family: 'Work Sans', system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  font-family: var(--font-family);
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: light;
+  color: var(--color-text);
+  background-color: rgba(255, 255, 255, 0.87);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
 }
