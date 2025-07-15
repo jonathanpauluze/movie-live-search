@@ -1,6 +1,7 @@
 :root {
   --color-primary-base: #0092ff;
   --color-primary-softest: #e1f2ff;
+  --color-primary-softest-hover: #f5faff;
   --color-primary-icon: #006eff;
   --color-neutral: #616161;
   --color-neutral-soft: #8e8e8e;

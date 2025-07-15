@@ -1,7 +1,11 @@
-import { SearchBar } from '@/components/search-bar'
+import Home from '@/pages/home'
 
 function App() {
-  return <SearchBar />
+  return (
+    <div>
+      <Home />
+    </div>
+  )
 }
 
 export default App
