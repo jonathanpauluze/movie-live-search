@@ -1,15 +1,7 @@
-import {
-  useRef,
-  useState,
-  useEffect,
-  type KeyboardEvent,
-  type ChangeEvent
-} from 'react'
-import { Icon } from '../icon'
+import { useState, type KeyboardEvent, type ChangeEvent } from 'react'
+import { MovieSuggestionsList } from '../movies-suggestion-list'
 import { NoResultsMessage } from '../no-results-message'
 import { useFavorites } from '@/hooks/use-favorites'
-import { highlightMatch } from '@/utils/highlight-match'
-import { classnames } from '@/utils/classnames'
 import { normalizeText } from '@/utils/normalize-text'
 import styles from './movie-search-bar.module.css'
 import type { TMDBMovie } from '@/services/tmdb/types'
@@ -17,6 +9,7 @@ import type { TMDBMovie } from '@/services/tmdb/types'
 type MovieSearchBarProps = {
   value: string
   suggestions: TMDBMovie[]
+  isLoading?: boolean
   onChange: (value: string) => void
   onSelect: (movie: TMDBMovie) => void
 }
@@ -24,16 +17,14 @@ type MovieSearchBarProps = {
 export function MovieSearchBar({
   value,
   suggestions,
+  isLoading,
   onChange,
   onSelect
 }: Readonly<MovieSearchBarProps>) {
   const [previousValue, setPreviousValue] = useState('')
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null)
   const [isNavigating, setIsNavigating] = useState(false)
-  const { toggle, has } = useFavorites()
-
-  const listRef = useRef<HTMLUListElement | null>(null)
-  const itemRefs = useRef<(HTMLLIElement | null)[]>([])
+  const { toggle } = useFavorites()
 
   const normalizedInput = normalizeText(value)
 
@@ -49,13 +40,11 @@ export function MovieSearchBar({
 
   const normalizedSuggestion = normalizeText(allSuggestions[0]?.title || '')
 
-  const isSuggestionSameAsSearchTerm = normalizedSuggestion === normalizedInput
-
-  console.log({ normalizedSuggestion, normalizedInput })
-
-  function isFavorite(id: number) {
-    return has(id)
-  }
+  const hasSuggestions = !isLoading && allSuggestions?.length > 0
+  const hasNoResults = !isLoading && !hasSuggestions && normalizedInput !== ''
+  const hasMatchingSuggestion =
+    normalizedSuggestion?.startsWith(normalizedInput)
+  const hasSuggestionEqualsTheSearch = normalizedSuggestion === normalizedInput
 
   function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
     if (!allSuggestions.length) return
@@ -144,15 +133,6 @@ export function MovieSearchBar({
     onChange(event.target.value)
   }
 
-  useEffect(() => {
-    const element =
-      highlightedIndex !== null ? itemRefs.current[highlightedIndex] : null
-
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-    }
-  }, [highlightedIndex])
-
   return (
     <div className={styles.wrapper}>
       <label htmlFor="movie-search" className={styles.label}>
@@ -160,15 +140,16 @@ export function MovieSearchBar({
       </label>
 
       <div className={styles.inputWrapper}>
-        {!isSuggestionSameAsSearchTerm && (
+        {!hasSuggestionEqualsTheSearch && (
           <div className={styles.autocompleteOverlay}>
             <span className={styles.userInput}>{value}</span>
-            {normalizedSuggestion?.startsWith(normalizedInput) && (
+
+            {hasMatchingSuggestion ? (
               <span className={styles.suggestionSuffix}>
                 {allSuggestions[0].title.slice(value.length)} - Utilize a tecla
                 → para aceitar a sugestão
               </span>
-            )}
+            ) : null}
           </div>
         )}
 
@@ -187,84 +168,17 @@ export function MovieSearchBar({
         Utilize as teclas ↓ ↑ para navegar entre as opções
       </p>
 
-      {suggestions?.length > 0 ? (
-        <ul className={styles.dropdown} ref={listRef}>
-          {allSuggestions.map((suggestion, index) => {
-            const isExactMatch = suggestion.id === exactMatch?.id
-
-            return (
-              <li
-                key={suggestion.id}
-                ref={(el) => {
-                  itemRefs.current[index] = el
-                }}
-                onClick={() => onSelect(suggestion)}
-                className={classnames({
-                  [styles.exactMatchItem]: isExactMatch,
-                  [styles.highlighted]: index === highlightedIndex
-                })}
-              >
-                {isExactMatch ? (
-                  <div className={styles.exactMatchContent}>
-                    {suggestion.poster ? (
-                      <img
-                        src={`https://image.tmdb.org/t/p/w92${suggestion.poster}`}
-                        alt={suggestion.title}
-                        className={styles.poster}
-                      />
-                    ) : (
-                      <div className={styles.defaultPoster}>
-                        <Icon name="movie" size="md" />
-                      </div>
-                    )}
-
-                    <div className={styles.exactMatchContentInfo}>
-                      <p title={suggestion.title} className={styles.title}>
-                        <strong>{suggestion.title}</strong>
-                        <span>({suggestion.release_year})</span>
-                      </p>
-                      <div className={styles.genresWrapper}>
-                        {suggestion.genres.map((genre) => (
-                          <span key={genre} className={styles.genreTag}>
-                            {genre}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <p>{highlightMatch(suggestion.title, value)}</p>
-                )}
-
-                <button
-                  className={classnames(styles.favoriteButton, {
-                    [styles.favorited]: isFavorite(suggestion.id)
-                  })}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    toggle(suggestion)
-                  }}
-                  aria-label={
-                    isFavorite(suggestion.id)
-                      ? 'Remover dos favoritos'
-                      : 'Adicionar aos favoritos'
-                  }
-                >
-                  <Icon
-                    name={isFavorite(suggestion.id) ? 'star-filled' : 'star'}
-                    className={classnames({
-                      [styles.notFavorite]: !isFavorite(suggestion.id),
-                      [styles.favorite]: isFavorite(suggestion.id)
-                    })}
-                  />
-                </button>
-              </li>
-            )
-          })}
-        </ul>
-      ) : normalizedInput !== '' ? (
-        <NoResultsMessage query={value} />
+      {hasSuggestions ? (
+        <MovieSuggestionsList
+          value={value}
+          onSelect={onSelect}
+          suggestions={allSuggestions}
+          exactMatch={exactMatch}
+          highlightedIndex={highlightedIndex}
+        />
       ) : null}
+
+      {hasNoResults ? <NoResultsMessage query={value} /> : null}
     </div>
   )
 }

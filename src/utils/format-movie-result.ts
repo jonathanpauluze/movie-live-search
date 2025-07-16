@@ -14,7 +14,7 @@ export function formatMovieResult(
 
   const releaseYear = result.release_date
     ? new Date(result.release_date).getFullYear()
-    : 0
+    : null
 
   return {
     id: result.id,

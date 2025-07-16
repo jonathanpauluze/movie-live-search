@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { MovieSearchBar } from '@/components/movie-search-bar'
 import { RedirectModal } from '@/components/redirect-modal'
 import { TMDBClient } from '@/services/tmdb/client'
@@ -11,40 +11,49 @@ export default function Home() {
   const [isRedirecting, setIsRedirecting] = useState(false)
 
   const { favorites, remove } = useFavorites()
-  const { suggestions, results, clearSuggestions } = useSearchMovies(searchTerm)
+  const { isLoading, suggestions, results, clearSuggestions } =
+    useSearchMovies(searchTerm)
 
-  async function handleSelect(movie: TMDBMovie) {
-    setSearchTerm(movie.title)
-    setIsRedirecting(true)
-    clearSuggestions()
+  const handleChange = useCallback((term: string) => {
+    setSearchTerm(term)
+  }, [])
 
-    const fallbackUrl = `https://www.imdb.com/find?q=${encodeURIComponent(
-      movie.title
-    )}`
+  const handleSelect = useCallback(
+    async (movie: TMDBMovie) => {
+      setSearchTerm(movie.title)
+      setIsRedirecting(true)
+      clearSuggestions()
 
-    try {
-      const { imdb_id } = await TMDBClient.getExternalIds(movie.id)
+      const fallbackUrl = `https://www.imdb.com/find?q=${encodeURIComponent(
+        movie.title
+      )}`
 
-      const imdbUrl = imdb_id
-        ? `https://www.imdb.com/title/${imdb_id}`
-        : fallbackUrl
+      try {
+        const { imdb_id } = await TMDBClient.getExternalIds(movie.id)
 
-      window.open(imdbUrl, '_blank')
-    } catch (err) {
-      console.error(err)
+        const imdbUrl = imdb_id
+          ? `https://www.imdb.com/title/${imdb_id}`
+          : fallbackUrl
 
-      window.open(fallbackUrl, '_blank')
-    } finally {
-      setIsRedirecting(false)
-    }
-  }
+        window.open(imdbUrl, '_blank')
+      } catch (err) {
+        console.error(err)
+
+        window.open(fallbackUrl, '_blank')
+      } finally {
+        setIsRedirecting(false)
+      }
+    },
+    [clearSuggestions]
+  )
 
   return (
     <main style={{ padding: '2rem' }}>
       <MovieSearchBar
+        isLoading={isLoading}
         value={searchTerm}
         suggestions={suggestions}
-        onChange={setSearchTerm}
+        onChange={handleChange}
         onSelect={handleSelect}
       />
 
@@ -75,7 +84,7 @@ export default function Home() {
                 {favorites.map((movie) => (
                   <tr key={movie.id}>
                     <td>{movie.title}</td>
-                    <td>{movie.release_year}</td>
+                    <td>{movie.release_year ?? '-'}</td>
                     <td>{movie.genres.join(', ')}</td>
                     <td>
                       <button

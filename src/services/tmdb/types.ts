@@ -2,22 +2,13 @@ export type TMDBMovie = {
   id: number
   title: string
   poster: string | null
-  release_year: number
+  release_year: number | null
   genres: string[]
 }
 
 export type TMDBGenre = {
   id: number
   name: string
-}
-
-export type TMDBExternalIds = {
-  id: number
-  imdb_id: string | null
-  wikidata_id: string | null
-  facebook_id: string | null
-  instagram_id: string | null
-  twitter_id: string | null
 }
 
 export type TMDBMovieResponse = {
@@ -46,4 +37,13 @@ export type TMDBSearchResponse = {
 
 export type TMDBGenresResponse = {
   genres: TMDBGenre[]
+}
+
+export type TMDBExternalIdsResponse = {
+  id: number
+  imdb_id: string | null
+  wikidata_id: string | null
+  facebook_id: string | null
+  instagram_id: string | null
+  twitter_id: string | null
 }

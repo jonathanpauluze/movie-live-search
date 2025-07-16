@@ -18,14 +18,17 @@ export function useSearchMovies(term: string) {
   }
 
   useEffect(() => {
+    if (term) {
+      setIsLoading(true)
+    }
+  }, [term])
+
+  useEffect(() => {
     if (!debouncedTerm) {
-      setIsLoading(false)
       setSuggestions([])
       setResults([])
       return
     }
-
-    setIsLoading(true)
 
     TMDBClient.searchMovie(debouncedTerm)
       .then(({ results }) => {
