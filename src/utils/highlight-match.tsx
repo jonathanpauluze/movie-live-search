@@ -1,3 +1,4 @@
+import { normalizeText } from '@/utils/normalize-text'
 import type { JSX } from 'react'
 
 export function highlightMatch(
@@ -6,19 +7,25 @@ export function highlightMatch(
 ): (string | JSX.Element)[] {
   if (!term) return [text]
 
-  const regex = new RegExp(`(${term})`, 'gi')
-  const parts = text.split(regex)
+  const normalizedText = normalizeText(text)
+  const normalizedTerm = normalizeText(term)
 
-  return parts.map((part, index) =>
-    part.toLowerCase() === term.toLowerCase() ? (
-      <span
-        key={index}
-        style={{ color: 'var(--color-primary-icon)', fontWeight: 500 }}
-      >
-        {part}
-      </span>
-    ) : (
-      part
-    )
-  )
+  const index = normalizedText.indexOf(normalizedTerm)
+
+  if (index === -1) return [text]
+
+  const start = text.slice(0, index)
+  const match = text.slice(index, index + term.length)
+  const end = text.slice(index + term.length)
+
+  return [
+    start,
+    <span
+      key="match"
+      style={{ color: 'var(--color-primary-icon)', fontWeight: 500 }}
+    >
+      {match}
+    </span>,
+    end
+  ]
 }

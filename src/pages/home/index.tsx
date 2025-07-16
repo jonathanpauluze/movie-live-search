@@ -1,44 +1,22 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { MovieSearchBar } from '@/components/movie-search-bar'
 import { RedirectModal } from '@/components/redirect-modal'
 import { TMDBClient } from '@/services/tmdb/client'
-import { useDebouncedValue } from '@/hooks/use-debounced-value'
-import { useGenres } from '@/hooks/use-genres'
+import { useSearchMovies } from '@/hooks/use-search-movies'
 import { useFavorites } from '@/hooks/use-favorites'
 import type { TMDBMovie } from '@/services/tmdb/types'
-import { formatMovieResult } from '@/utils/format-movie-result'
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('')
-  const [suggestions, setSuggestions] = useState<TMDBMovie[]>([])
-  const [results, setResults] = useState<TMDBMovie[]>([])
   const [isRedirecting, setIsRedirecting] = useState(false)
 
   const { favorites, remove } = useFavorites()
-  const genres = useGenres()
-  const debouncedTerm = useDebouncedValue(searchTerm, 300)
-
-  useEffect(() => {
-    if (!debouncedTerm) {
-      setSuggestions([])
-      return
-    }
-
-    TMDBClient.searchMovie(debouncedTerm)
-      .then((response) => {
-        const results = response.results.map((result) =>
-          formatMovieResult(result, genres)
-        )
-        setSuggestions(results)
-        setResults(results)
-      })
-      .catch(console.error)
-  }, [debouncedTerm, genres])
+  const { suggestions, results, clearSuggestions } = useSearchMovies(searchTerm)
 
   async function handleSelect(movie: TMDBMovie) {
     setSearchTerm(movie.title)
-    setSuggestions([])
     setIsRedirecting(true)
+    clearSuggestions()
 
     const fallbackUrl = `https://www.imdb.com/find?q=${encodeURIComponent(
       movie.title

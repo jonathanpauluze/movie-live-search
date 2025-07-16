@@ -5,12 +5,14 @@ import {
   type KeyboardEvent,
   type ChangeEvent
 } from 'react'
-import type { TMDBMovie } from '@/services/tmdb/types'
-import { highlightMatch } from '@/utils/highlight-match'
 import { Icon } from '../icon'
-import { classnames } from '@/utils/classnames'
+import { NoResultsMessage } from '../no-results-message'
 import { useFavorites } from '@/hooks/use-favorites'
+import { highlightMatch } from '@/utils/highlight-match'
+import { classnames } from '@/utils/classnames'
+import { normalizeText } from '@/utils/normalize-text'
 import styles from './movie-search-bar.module.css'
+import type { TMDBMovie } from '@/services/tmdb/types'
 
 type MovieSearchBarProps = {
   value: string
@@ -33,12 +35,10 @@ export function MovieSearchBar({
   const listRef = useRef<HTMLUListElement | null>(null)
   const itemRefs = useRef<(HTMLLIElement | null)[]>([])
 
-  const parsedSuggestion = suggestions[0]?.title?.toLowerCase()
-  const parsedSearchTerm = value.toLowerCase()
-  const isSuggestionSameAsSearchTerm = parsedSuggestion === parsedSearchTerm
+  const normalizedInput = normalizeText(value)
 
   const exactMatch = suggestions.find(
-    (suggestion) => suggestion.title.toLowerCase() === value.toLowerCase()
+    (suggestion) => normalizeText(suggestion.title) === normalizedInput
   )
   const otherSuggestions = suggestions.filter(
     (suggestion) => suggestion.id !== exactMatch?.id
@@ -47,24 +47,30 @@ export function MovieSearchBar({
     ? [exactMatch, ...otherSuggestions]
     : otherSuggestions
 
+  const normalizedSuggestion = normalizeText(allSuggestions[0]?.title || '')
+
+  const isSuggestionSameAsSearchTerm = normalizedSuggestion === normalizedInput
+
+  console.log({ normalizedSuggestion, normalizedInput })
+
   function isFavorite(id: number) {
     return has(id)
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
-    if (!suggestions.length) return
+    if (!allSuggestions.length) return
 
-    const suggestion = suggestions[0]
+    const suggestion = allSuggestions[0]
 
     if (event.key === 'ArrowLeft') {
-      if (suggestion?.title.toLowerCase().startsWith(value.toLowerCase())) {
+      if (normalizedSuggestion.startsWith(normalizedInput)) {
         event.preventDefault()
         onChange(previousValue)
       }
     }
 
     if (event.key === 'ArrowRight') {
-      if (suggestion?.title.toLowerCase().startsWith(value.toLowerCase())) {
+      if (normalizedSuggestion.startsWith(normalizedInput)) {
         event.preventDefault()
         setPreviousValue(value)
         onChange(suggestion.title)
@@ -157,10 +163,10 @@ export function MovieSearchBar({
         {!isSuggestionSameAsSearchTerm && (
           <div className={styles.autocompleteOverlay}>
             <span className={styles.userInput}>{value}</span>
-            {parsedSuggestion?.startsWith(parsedSearchTerm) && (
+            {normalizedSuggestion?.startsWith(normalizedInput) && (
               <span className={styles.suggestionSuffix}>
-                {suggestions[0].title.slice(value.length)} - Utilize a tecla →
-                para aceitar a sugestão
+                {allSuggestions[0].title.slice(value.length)} - Utilize a tecla
+                → para aceitar a sugestão
               </span>
             )}
           </div>
@@ -256,6 +262,8 @@ export function MovieSearchBar({
             )
           })}
         </ul>
+      ) : normalizedInput !== '' ? (
+        <NoResultsMessage query={value} />
       ) : null}
     </div>
   )
