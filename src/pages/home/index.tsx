@@ -3,6 +3,7 @@ import { MovieSearchBar } from '@/components/movie-search-bar'
 import { TMDBClient } from '@/services/tmdb/client'
 import { useDebouncedValue } from '@/hooks/use-debounced-value'
 import { useGenres } from '@/hooks/use-genres'
+import { useFavorites } from '@/hooks/use-favorites'
 import type { TMDBMovie } from '@/services/tmdb/types'
 import { formatMovieResult } from '@/utils/format-movie-result'
 
@@ -11,6 +12,7 @@ export default function Home() {
   const [suggestions, setSuggestions] = useState<TMDBMovie[]>([])
   const [results, setResults] = useState<TMDBMovie[]>([])
 
+  const { favorites, remove } = useFavorites()
   const genres = useGenres()
   const debouncedTerm = useDebouncedValue(searchTerm, 300)
 
@@ -45,13 +47,55 @@ export default function Home() {
         onSelect={handleSelect}
       />
 
-      <section style={{ marginTop: '2rem' }}>
-        {results.map((movie) => (
-          <div key={movie.id} style={{ marginBottom: '1rem' }}>
-            <strong>{movie.title}</strong> ({movie.release_year})
-          </div>
-        ))}
-      </section>
+      {searchTerm ? (
+        <section>
+          {results.map((movie) => (
+            <div key={movie.id}>
+              <strong>{movie.title}</strong> ({movie.release_year})
+            </div>
+          ))}
+        </section>
+      ) : (
+        <section>
+          <h2>Meus Favoritos</h2>
+          {favorites.length === 0 ? (
+            <p>Nenhum filme favoritado ainda.</p>
+          ) : (
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr>
+                  <th align="left">Título</th>
+                  <th align="left">Ano</th>
+                  <th align="left">Gêneros</th>
+                  <th />
+                </tr>
+              </thead>
+              <tbody>
+                {favorites.map((movie) => (
+                  <tr key={movie.id}>
+                    <td>{movie.title}</td>
+                    <td>{movie.release_year}</td>
+                    <td>{movie.genres.join(', ')}</td>
+                    <td>
+                      <button
+                        onClick={() => remove(movie.id)}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: 'red',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Remover
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </section>
+      )}
     </main>
   )
 }

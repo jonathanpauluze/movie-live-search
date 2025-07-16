@@ -9,9 +9,7 @@ import type { TMDBMovie } from '@/services/tmdb/types'
 import { highlightMatch } from '@/utils/highlight-match'
 import { Icon } from '../icon'
 import { classnames } from '@/utils/classnames'
-import { loadFromStorage, saveToStorage } from '@/utils/local-storage'
-import { STORAGE_FAVORITES_KEY } from '@/constants/storage'
-import defaultIcon from '@/assets/default.svg'
+import { useFavorites } from '@/hooks/use-favorites'
 import styles from './movie-search-bar.module.css'
 
 type MovieSearchBarProps = {
@@ -28,12 +26,9 @@ export function MovieSearchBar({
   onSelect
 }: Readonly<MovieSearchBarProps>) {
   const [previousValue, setPreviousValue] = useState('')
-  const [highlightedIndex, setHighlightedIndex] = useState(0)
-  const [favorites, setFavorites] = useState<number[]>(() => {
-    const storageFavorites = loadFromStorage<number[]>(STORAGE_FAVORITES_KEY)
-
-    return storageFavorites ?? []
-  })
+  const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null)
+  const [isNavigating, setIsNavigating] = useState(false)
+  const { toggle, has } = useFavorites()
 
   const listRef = useRef<HTMLUListElement | null>(null)
   const itemRefs = useRef<(HTMLLIElement | null)[]>([])
@@ -52,14 +47,8 @@ export function MovieSearchBar({
     ? [exactMatch, ...otherSuggestions]
     : otherSuggestions
 
-  function toggleFavorite(id: number) {
-    setFavorites((prev) =>
-      prev.includes(id) ? prev.filter((fav) => fav !== id) : [...prev, id]
-    )
-  }
-
   function isFavorite(id: number) {
-    return favorites.includes(id)
+    return has(id)
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
@@ -84,29 +73,64 @@ export function MovieSearchBar({
 
     if (event.key === 'ArrowDown') {
       event.preventDefault()
-      setHighlightedIndex((prev) =>
-        prev < suggestions.length - 1 ? prev + 1 : 0
-      )
+
+      setIsNavigating(true)
+      setHighlightedIndex((prev) => {
+        if (prev === null) return 0
+
+        return prev < suggestions.length - 1 ? prev + 1 : 0
+      })
     }
 
     if (event.key === 'ArrowUp') {
       event.preventDefault()
-      setHighlightedIndex((prev) =>
-        prev > 0 ? prev - 1 : suggestions.length - 1
-      )
+
+      setIsNavigating(true)
+      setHighlightedIndex((prev) => {
+        if (prev === null) return 0
+
+        return prev > 0 ? prev - 1 : suggestions.length - 1
+      })
     }
 
     if (event.key === 'Enter') {
       event.preventDefault()
-      const selected = suggestions[highlightedIndex]
+      const selected =
+        highlightedIndex !== null ? suggestions[highlightedIndex] : null
       if (selected) {
         onSelect(selected)
       }
     }
 
+    if (event.key === ' ') {
+      const selected =
+        highlightedIndex !== null ? suggestions[highlightedIndex] : null
+
+      if (isNavigating && selected) {
+        event.preventDefault()
+
+        toggle(selected)
+      }
+    }
+
     if (event.key === 'Escape') {
       event.preventDefault()
-      setHighlightedIndex(0)
+      setHighlightedIndex(null)
+      setIsNavigating(false)
+    }
+
+    if (
+      ![
+        'ArrowUp',
+        'ArrowDown',
+        ' ',
+        'Enter',
+        'Escape',
+        'ArrowLeft',
+        'ArrowRight'
+      ].includes(event.key)
+    ) {
+      setIsNavigating(false)
     }
   }
 
@@ -115,15 +139,13 @@ export function MovieSearchBar({
   }
 
   useEffect(() => {
-    const element = itemRefs.current[highlightedIndex]
+    const element =
+      highlightedIndex !== null ? itemRefs.current[highlightedIndex] : null
+
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     }
   }, [highlightedIndex])
-
-  useEffect(() => {
-    saveToStorage(STORAGE_FAVORITES_KEY, favorites)
-  }, [favorites])
 
   return (
     <div className={styles.wrapper}>
@@ -178,23 +200,24 @@ export function MovieSearchBar({
               >
                 {isExactMatch ? (
                   <div className={styles.exactMatchContent}>
-                    <img
-                      src={
-                        suggestion.poster
-                          ? `https://image.tmdb.org/t/p/w92${suggestion.poster}`
-                          : defaultIcon
-                      }
-                      alt={suggestion.title}
-                      className={styles.poster}
-                    />
-                    <div>
-                      <strong className={styles.title}>
-                        {suggestion.title}
-                      </strong>{' '}
-                      <span className={styles.year}>
-                        ({suggestion.release_year})
-                      </span>
-                      <div className={styles.genres}>
+                    {suggestion.poster ? (
+                      <img
+                        src={`https://image.tmdb.org/t/p/w92${suggestion.poster}`}
+                        alt={suggestion.title}
+                        className={styles.poster}
+                      />
+                    ) : (
+                      <div className={styles.defaultPoster}>
+                        <Icon name="movie" size="md" />
+                      </div>
+                    )}
+
+                    <div className={styles.exactMatchContentInfo}>
+                      <p title={suggestion.title} className={styles.title}>
+                        <strong>{suggestion.title}</strong>
+                        <span>({suggestion.release_year})</span>
+                      </p>
+                      <div className={styles.genresWrapper}>
                         {suggestion.genres.map((genre) => (
                           <span key={genre} className={styles.genreTag}>
                             {genre}
@@ -204,7 +227,7 @@ export function MovieSearchBar({
                     </div>
                   </div>
                 ) : (
-                  highlightMatch(suggestion.title, value)
+                  <p>{highlightMatch(suggestion.title, value)}</p>
                 )}
 
                 <button
@@ -213,7 +236,7 @@ export function MovieSearchBar({
                   })}
                   onClick={(e) => {
                     e.stopPropagation()
-                    toggleFavorite(suggestion.id)
+                    toggle(suggestion)
                   }}
                   aria-label={
                     isFavorite(suggestion.id)
