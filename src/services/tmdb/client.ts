@@ -1,5 +1,10 @@
 import { api } from '@/lib/api'
-import type { TMDBSearchResponse, TMDBGenresResponse, TMDBGenre } from './types'
+import type {
+  TMDBSearchResponse,
+  TMDBGenresResponse,
+  TMDBGenre,
+  TMDBExternalIdsResponse
+} from './types'
 
 export class TMDBClient {
   static async searchMovie(query: string, page = '1') {
@@ -23,5 +28,15 @@ export class TMDBClient {
     )
 
     return response.genres
+  }
+
+  static async getExternalIds(
+    movieId: number
+  ): Promise<TMDBExternalIdsResponse> {
+    const response = await api.get<TMDBExternalIdsResponse>(
+      `/movie/${movieId}/external_ids`
+    )
+
+    return response
   }
 }

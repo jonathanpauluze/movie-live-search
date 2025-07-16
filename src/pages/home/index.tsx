@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { MovieSearchBar } from '@/components/movie-search-bar'
+import { RedirectModal } from '@/components/redirect-modal'
 import { TMDBClient } from '@/services/tmdb/client'
 import { useDebouncedValue } from '@/hooks/use-debounced-value'
 import { useGenres } from '@/hooks/use-genres'
@@ -11,6 +12,7 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('')
   const [suggestions, setSuggestions] = useState<TMDBMovie[]>([])
   const [results, setResults] = useState<TMDBMovie[]>([])
+  const [isRedirecting, setIsRedirecting] = useState(false)
 
   const { favorites, remove } = useFavorites()
   const genres = useGenres()
@@ -33,9 +35,30 @@ export default function Home() {
       .catch(console.error)
   }, [debouncedTerm, genres])
 
-  function handleSelect(movie: TMDBMovie) {
+  async function handleSelect(movie: TMDBMovie) {
     setSearchTerm(movie.title)
     setSuggestions([])
+    setIsRedirecting(true)
+
+    const fallbackUrl = `https://www.imdb.com/find?q=${encodeURIComponent(
+      movie.title
+    )}`
+
+    try {
+      const { imdb_id } = await TMDBClient.getExternalIds(movie.id)
+
+      const imdbUrl = imdb_id
+        ? `https://www.imdb.com/title/${imdb_id}`
+        : fallbackUrl
+
+      window.open(imdbUrl, '_blank')
+    } catch (err) {
+      console.error(err)
+
+      window.open(fallbackUrl, '_blank')
+    } finally {
+      setIsRedirecting(false)
+    }
   }
 
   return (
@@ -96,6 +119,8 @@ export default function Home() {
           )}
         </section>
       )}
+
+      <RedirectModal isOpen={isRedirecting} />
     </main>
   )
 }
