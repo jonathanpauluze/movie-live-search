@@ -3,6 +3,7 @@ import { MovieSearchBar } from '@/components/movie-search-bar'
 import { MoviesFavoritesTable } from '@/components/movies-favorites-table '
 import { MoviesResultTable } from '@/components/movies-result-table'
 import { RedirectModal } from '@/components/redirect-modal'
+import { Spinner } from '@/components/spinner'
 import { TMDBClient } from '@/services/tmdb/client'
 import { useSearchMovies } from '@/hooks/use-search-movies'
 import { useFavorites } from '@/hooks/use-favorites'
@@ -16,7 +17,8 @@ export default function Home() {
 
   const { favorites, remove } = useFavorites()
 
-  const { isLoading, results, fetchNextPage } = useSearchMovies(searchTerm)
+  const { isLoading, isFetchingNextPage, results, fetchNextPage } =
+    useSearchMovies(searchTerm)
 
   const loaderRef = useIntersectionObserver<HTMLTableRowElement>(
     fetchNextPage,
@@ -66,6 +68,13 @@ export default function Home() {
       {searchTerm ? (
         <section className={styles.resultSection}>
           <MoviesResultTable movies={results} ref={loaderRef} />
+
+          {isFetchingNextPage ? (
+            <div className={styles.loadingWrapper}>
+              <Spinner />
+              <p>Carregando mais resultados...</p>
+            </div>
+          ) : null}
         </section>
       ) : (
         <section className={styles.favoritesSection}>

@@ -76,5 +76,5 @@ export function useSearchMovies(term: string) {
     }
   }, [debouncedTerm, genres])
 
-  return { isLoading, results, fetchNextPage }
+  return { isLoading, results, fetchNextPage, isFetchingNextPage }
 }

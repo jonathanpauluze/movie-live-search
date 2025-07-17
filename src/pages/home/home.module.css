@@ -1,13 +1,26 @@
+.loadingWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+
+  p {
+    text-align: center;
+    color: var(--color-neutral-soft);
+  }
+}
+
 .resultSection {
   margin-top: 2rem;
 }
 
 .favoritesSection {
-  margin-top: 2rem;
+  margin-top: 3rem;
 
   h2 {
     font-size: 2rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 
     @media (min-width: 768px) {
       font-size: 2.5rem;
