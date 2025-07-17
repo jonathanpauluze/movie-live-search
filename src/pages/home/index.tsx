@@ -81,7 +81,9 @@ export default function Home() {
           <h2>Meus Favoritos</h2>
 
           {favorites.length === 0 ? (
-            <p>Nenhum filme favoritado ainda.</p>
+            <p className={styles.emptyFavorites}>
+              Nenhum filme favoritado ainda.
+            </p>
           ) : (
             <MoviesFavoritesTable movies={favorites} onRemove={remove} />
           )}
