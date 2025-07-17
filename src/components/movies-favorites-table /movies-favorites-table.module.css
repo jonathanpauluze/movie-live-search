@@ -1,0 +1,26 @@
+.wrapper {
+  max-height: 600px;
+}
+
+.title {
+  min-width: 300px;
+}
+
+.genres {
+  min-width: 300px;
+}
+
+.removeBtn {
+  padding: 1rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--color-danger);
+  transition: all 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--color-danger);
+    color: #fff;
+  }
+}
