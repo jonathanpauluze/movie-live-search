@@ -7,12 +7,12 @@ import type {
 } from './types'
 
 export class TMDBClient {
-  static async searchMovie(query: string, page = '1') {
+  static async searchMovie(query: string, page = 1) {
     const formatted = new URLSearchParams({
       query,
       include_adult: 'false',
       language: 'pt-BR',
-      page
+      page: String(page)
     }).toString()
 
     const response = await api.get<TMDBSearchResponse>(

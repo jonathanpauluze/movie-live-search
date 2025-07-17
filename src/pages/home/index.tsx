@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { MovieSearchBar } from '@/components/movie-search-bar'
 import { RedirectModal } from '@/components/redirect-modal'
 import { TMDBClient } from '@/services/tmdb/client'
@@ -9,9 +9,11 @@ import type { TMDBMovie } from '@/services/tmdb/types'
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('')
   const [isRedirecting, setIsRedirecting] = useState(false)
+  const loaderRef = useRef<HTMLDivElement | null>(null)
 
   const { favorites, remove } = useFavorites()
-  const { isLoading, suggestions, results, clearSuggestions } =
+
+  const { isLoading, suggestions, results, fetchNextPage, clearSuggestions } =
     useSearchMovies(searchTerm)
 
   const handleChange = useCallback((term: string) => {
@@ -47,6 +49,24 @@ export default function Home() {
     [clearSuggestions]
   )
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          fetchNextPage()
+        }
+      },
+      { threshold: 1.0 }
+    )
+
+    const el = loaderRef.current
+    if (el) observer.observe(el)
+
+    return () => {
+      if (el) observer.unobserve(el)
+    }
+  }, [fetchNextPage])
+
   return (
     <main>
       <MovieSearchBar
@@ -64,6 +84,8 @@ export default function Home() {
               <strong>{movie.title}</strong> ({movie.release_year})
             </div>
           ))}
+
+          <div ref={loaderRef} />
         </section>
       ) : (
         <section>
