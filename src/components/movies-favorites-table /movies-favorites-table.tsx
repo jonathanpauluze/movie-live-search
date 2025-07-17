@@ -7,6 +7,7 @@ import {
   TableCell
 } from '@/components/table'
 import { PosterImage } from '@/components/poster-image'
+import { Icon } from '../icon'
 import styles from './movies-favorites-table.module.css'
 import type { TMDBMovie } from '@/services/tmdb/types'
 
@@ -48,6 +49,7 @@ export function MoviesFavoritesTable(
                 className={styles.removeBtn}
                 onClick={() => onRemove?.(movie.id)}
               >
+                <Icon name="trash" size="sm" />
                 Remover
               </button>
             </TableCell>
