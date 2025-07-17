@@ -1,0 +1,18 @@
+.defaultPoster {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 73px;
+  border-radius: 0.25rem;
+  background-color: var(--color-neutral-soft);
+  color: var(--color-text-neutral);
+}
+
+.poster {
+  width: 48px;
+  aspect-ratio: 2 / 3;
+  border-radius: 0.25rem;
+  object-fit: cover;
+  background-color: var(--color-neutral-soft);
+}

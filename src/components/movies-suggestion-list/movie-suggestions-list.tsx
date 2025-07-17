@@ -3,6 +3,7 @@ import { useFavorites } from '@/hooks/use-favorites'
 import { highlightMatch } from '@/utils/highlight-match'
 import { classnames } from '@/utils/classnames'
 import { Icon } from '@/components/icon'
+import { PosterImage } from '../poster-image'
 import styles from './movie-suggestions-list.module.css'
 import type { TMDBMovie } from '@/services/tmdb/types'
 
@@ -53,17 +54,7 @@ export function MovieSuggestionsList(props: Readonly<MovieSuggestionsProps>) {
           >
             {isExactMatch ? (
               <div className={styles.exactMatchContent}>
-                {suggestion.poster ? (
-                  <img
-                    src={`https://image.tmdb.org/t/p/w92${suggestion.poster}`}
-                    alt={suggestion.title}
-                    className={styles.poster}
-                  />
-                ) : (
-                  <div className={styles.defaultPoster}>
-                    <Icon name="movie" size="md" />
-                  </div>
-                )}
+                <PosterImage path={suggestion.poster} alt={suggestion.title} />
 
                 <div className={styles.exactMatchContentInfo}>
                   <p title={suggestion.title} className={styles.title}>
