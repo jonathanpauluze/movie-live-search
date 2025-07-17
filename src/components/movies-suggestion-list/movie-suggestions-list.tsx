@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useFavorites } from '@/hooks/use-favorites'
+import { useIntersectionObserver } from '@/hooks/use-intersection-observer'
 import { highlightMatch } from '@/utils/highlight-match'
 import { classnames } from '@/utils/classnames'
 import { Icon } from '@/components/icon'
@@ -7,21 +8,39 @@ import { PosterImage } from '../poster-image'
 import styles from './movie-suggestions-list.module.css'
 import type { TMDBMovie } from '@/services/tmdb/types'
 
-type MovieSuggestionsProps = {
+type MovieSuggestionsListProps = {
   suggestions: TMDBMovie[]
   exactMatch: TMDBMovie | undefined
   value: string
   highlightedIndex: number | null
   onSelect: (movie: TMDBMovie) => void
+  onLastItemVisible?: () => void
 }
 
-export function MovieSuggestionsList(props: Readonly<MovieSuggestionsProps>) {
-  const { suggestions, exactMatch, value, highlightedIndex, onSelect } = props
+export function MovieSuggestionsList(
+  props: Readonly<MovieSuggestionsListProps>
+) {
+  const {
+    suggestions,
+    exactMatch,
+    value,
+    highlightedIndex,
+    onSelect,
+    onLastItemVisible
+  } = props
 
   const listRef = useRef<HTMLUListElement | null>(null)
   const itemRefs = useRef<(HTMLLIElement | null)[]>([])
 
   const { toggle, has } = useFavorites()
+
+  const lastItemRef = useIntersectionObserver(
+    () => {
+      if (onLastItemVisible) onLastItemVisible()
+    },
+    { threshold: 0.6 }
+  )
+
   function isFavorite(id: number) {
     return has(id)
   }
@@ -39,12 +58,17 @@ export function MovieSuggestionsList(props: Readonly<MovieSuggestionsProps>) {
     <ul className={styles.dropdown} ref={listRef}>
       {suggestions.map((suggestion, index) => {
         const isExactMatch = suggestion.id === exactMatch?.id
+        const isLastItem = index === suggestions.length - 1
 
         return (
           <li
             key={suggestion.id}
             ref={(el) => {
               itemRefs.current[index] = el
+
+              if (isLastItem) {
+                lastItemRef.current = el
+              }
             }}
             onClick={() => onSelect(suggestion)}
             className={classnames({

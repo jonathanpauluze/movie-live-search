@@ -8,7 +8,6 @@ import type { TMDBMovie } from '@/services/tmdb/types'
 export function useSearchMovies(term: string) {
   const [isLoading, setIsLoading] = useState(true)
   const [isFetchingNextPage, setIsFetchingNextPage] = useState(false)
-  const [suggestions, setSuggestions] = useState<TMDBMovie[]>([])
   const [results, setResults] = useState<TMDBMovie[]>([])
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(false)
@@ -16,10 +15,6 @@ export function useSearchMovies(term: string) {
   const debouncedTerm = useDebouncedValue(term, 300)
   const genres = useGenres()
   const prevTermRef = useRef('')
-
-  function clearSuggestions() {
-    setSuggestions([])
-  }
 
   async function fetchNextPage() {
     if (!debouncedTerm || isFetchingNextPage || !hasMore) return
@@ -52,7 +47,6 @@ export function useSearchMovies(term: string) {
 
   useEffect(() => {
     if (!debouncedTerm) {
-      setSuggestions([])
       setResults([])
       setPage(1)
       setHasMore(false)
@@ -68,13 +62,11 @@ export function useSearchMovies(term: string) {
           const formatted = results.map((result) =>
             formatMovieResult(result, genres)
           )
-          setSuggestions(formatted)
           setResults(formatted)
           setHasMore(2 <= total_pages)
           setPage(2)
         })
         .catch(() => {
-          setSuggestions([])
           setResults([])
           setHasMore(false)
         })
@@ -84,5 +76,5 @@ export function useSearchMovies(term: string) {
     }
   }, [debouncedTerm, genres])
 
-  return { isLoading, suggestions, results, fetchNextPage, clearSuggestions }
+  return { isLoading, results, fetchNextPage }
 }

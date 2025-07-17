@@ -1,6 +1,7 @@
-import { useState, type KeyboardEvent, type ChangeEvent } from 'react'
+import { useState, useRef, type KeyboardEvent, type ChangeEvent } from 'react'
 import { MovieSuggestionsList } from '../movies-suggestion-list'
 import { NoResultsMessage } from '../no-results-message'
+import { useClickOutside } from '@/hooks/use-click-outside'
 import { useFavorites } from '@/hooks/use-favorites'
 import { normalizeText } from '@/utils/normalize-text'
 import { classnames } from '@/utils/classnames'
@@ -14,15 +15,32 @@ type MovieSearchBarProps = {
   onChange: (value: string) => void
   onSelect: (movie: TMDBMovie) => void
   className?: string
+  onLastItemVisible?: () => void
 }
 
 export function MovieSearchBar(props: Readonly<MovieSearchBarProps>) {
-  const { value, suggestions, isLoading, onChange, onSelect, className } = props
+  const {
+    value,
+    suggestions,
+    isLoading,
+    onChange,
+    onSelect,
+    className,
+    onLastItemVisible
+  } = props
 
   const [previousValue, setPreviousValue] = useState('')
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null)
   const [isNavigating, setIsNavigating] = useState(false)
+  const [isFocused, setIsFocused] = useState(false)
+  const wrapperRef = useRef<HTMLDivElement | null>(null)
+
   const { toggle } = useFavorites()
+
+  useClickOutside(wrapperRef, () => {
+    setIsFocused(false)
+    setHighlightedIndex(null)
+  })
 
   const normalizedInput = normalizeText(value)
 
@@ -92,6 +110,7 @@ export function MovieSearchBar(props: Readonly<MovieSearchBarProps>) {
         highlightedIndex !== null ? suggestions[highlightedIndex] : null
       if (selected) {
         onSelect(selected)
+        setIsFocused(false)
       }
     }
 
@@ -110,6 +129,7 @@ export function MovieSearchBar(props: Readonly<MovieSearchBarProps>) {
       event.preventDefault()
       setHighlightedIndex(null)
       setIsNavigating(false)
+      setIsFocused(false)
     }
 
     if (
@@ -128,11 +148,16 @@ export function MovieSearchBar(props: Readonly<MovieSearchBarProps>) {
   }
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
+    if (!isFocused) setIsFocused(true)
     onChange(event.target.value)
   }
 
+  function handleFocus() {
+    setIsFocused(true)
+  }
+
   return (
-    <div className={classnames(styles.wrapper, className)}>
+    <div ref={wrapperRef} className={classnames(styles.wrapper, className)}>
       <label htmlFor="movie-search" className={styles.label}>
         Pesquise um filme
       </label>
@@ -158,6 +183,7 @@ export function MovieSearchBar(props: Readonly<MovieSearchBarProps>) {
           value={value}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
+          onFocus={handleFocus}
           placeholder="Ex: Star Wars"
         />
       </div>
@@ -166,13 +192,14 @@ export function MovieSearchBar(props: Readonly<MovieSearchBarProps>) {
         Utilize as teclas ↓ ↑ para navegar entre as opções
       </p>
 
-      {hasSuggestions ? (
+      {hasSuggestions && isFocused ? (
         <MovieSuggestionsList
           value={value}
           onSelect={onSelect}
           suggestions={allSuggestions}
           exactMatch={exactMatch}
           highlightedIndex={highlightedIndex}
+          onLastItemVisible={onLastItemVisible}
         />
       ) : null}
 
