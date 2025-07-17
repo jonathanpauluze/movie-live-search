@@ -3,6 +3,7 @@ import { MovieSuggestionsList } from '../movies-suggestion-list'
 import { NoResultsMessage } from '../no-results-message'
 import { useFavorites } from '@/hooks/use-favorites'
 import { normalizeText } from '@/utils/normalize-text'
+import { classnames } from '@/utils/classnames'
 import styles from './movie-search-bar.module.css'
 import type { TMDBMovie } from '@/services/tmdb/types'
 
@@ -12,15 +13,12 @@ type MovieSearchBarProps = {
   isLoading?: boolean
   onChange: (value: string) => void
   onSelect: (movie: TMDBMovie) => void
+  className?: string
 }
 
-export function MovieSearchBar({
-  value,
-  suggestions,
-  isLoading,
-  onChange,
-  onSelect
-}: Readonly<MovieSearchBarProps>) {
+export function MovieSearchBar(props: Readonly<MovieSearchBarProps>) {
+  const { value, suggestions, isLoading, onChange, onSelect, className } = props
+
   const [previousValue, setPreviousValue] = useState('')
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null)
   const [isNavigating, setIsNavigating] = useState(false)
@@ -134,7 +132,7 @@ export function MovieSearchBar({
   }
 
   return (
-    <div className={styles.wrapper}>
+    <div className={classnames(styles.wrapper, className)}>
       <label htmlFor="movie-search" className={styles.label}>
         Pesquise um filme
       </label>

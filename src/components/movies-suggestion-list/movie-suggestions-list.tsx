@@ -37,7 +37,6 @@ export function MovieSuggestionsList(props: Readonly<MovieSuggestionsProps>) {
   return (
     <ul className={styles.dropdown} ref={listRef}>
       {suggestions.map((suggestion, index) => {
-        console.log({ suggestion })
         const isExactMatch = suggestion.id === exactMatch?.id
 
         return (
