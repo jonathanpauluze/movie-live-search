@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { loadFromStorage, saveToStorage } from '@/utils/local-storage'
-import { TMDBClient } from '@/services/tmdb/client'
+import { TMDBClient } from '@/services/tmdb'
 import { STORAGE_GENRES_KEY } from '@/constants/storage'
-import type { TMDBGenre } from '@/services/tmdb/types'
+import type { TMDBGenre } from '@/services/tmdb'
 
 export function useGenres(): TMDBGenre[] {
   const [genres, setGenres] = useState<TMDBGenre[]>(() => {

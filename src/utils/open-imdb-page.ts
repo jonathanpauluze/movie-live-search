@@ -1,5 +1,4 @@
-import { TMDBClient } from '@/services/tmdb/client'
-import type { TMDBMovie } from '@/services/tmdb/types'
+import { TMDBClient, type TMDBMovie } from '@/services/tmdb'
 
 export async function openIMDBPage(movie: TMDBMovie) {
   const fallbackUrl = `https://www.imdb.com/find?q=${encodeURIComponent(

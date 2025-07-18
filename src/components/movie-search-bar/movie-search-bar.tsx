@@ -6,7 +6,7 @@ import { useFavorites } from '@/hooks/use-favorites'
 import { normalizeText } from '@/utils/normalize-text'
 import { classnames } from '@/utils/classnames'
 import styles from './movie-search-bar.module.css'
-import type { TMDBMovie } from '@/services/tmdb/types'
+import type { TMDBMovie } from '@/services/tmdb'
 
 type MovieSearchBarProps = {
   value: string

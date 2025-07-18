@@ -6,7 +6,7 @@ import { classnames } from '@/utils/classnames'
 import { Icon } from '@/components/icon'
 import { PosterImage } from '../poster-image'
 import styles from './movie-suggestions-list.module.css'
-import type { TMDBMovie } from '@/services/tmdb/types'
+import type { TMDBMovie } from '@/services/tmdb'
 
 type MovieSuggestionsListProps = {
   suggestions: TMDBMovie[]

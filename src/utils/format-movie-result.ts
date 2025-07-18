@@ -1,8 +1,4 @@
-import type {
-  TMDBMovieResponse,
-  TMDBMovie,
-  TMDBGenre
-} from '@/services/tmdb/types'
+import type { TMDBMovieResponse, TMDBMovie, TMDBGenre } from '@/services/tmdb'
 
 export function formatMovieResult(
   result: TMDBMovieResponse,
