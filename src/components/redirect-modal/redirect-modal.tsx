@@ -1,19 +1,19 @@
+import { Modal } from '../modal'
 import styles from './redirect-modal.module.css'
 
 type RedirectModalProps = {
   isOpen: boolean
+  onClose?: VoidFunction
 }
 
 export function RedirectModal(props: Readonly<RedirectModalProps>) {
-  const { isOpen } = props
+  const { isOpen, onClose } = props
 
   if (!isOpen) return null
 
   return (
-    <div className={styles.overlay}>
-      <div className={styles.modal}>
-        <p>Redirecionando para o IMDB...</p>
-      </div>
-    </div>
+    <Modal isOpen={isOpen} title="Redirecionando..." onClose={onClose}>
+      <p className={styles.text}>Redirecionando para o site do IMDB...</p>
+    </Modal>
   )
 }

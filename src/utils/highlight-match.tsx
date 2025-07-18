@@ -22,7 +22,7 @@ export function highlightMatch(
     start,
     <span
       key="match"
-      style={{ color: 'var(--color-primary-icon)', fontWeight: 500 }}
+      style={{ color: 'var(--color-primary-heavy)', fontWeight: 500 }}
     >
       {match}
     </span>,

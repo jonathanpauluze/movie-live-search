@@ -4,6 +4,7 @@ import Movie from './raw/movie'
 import Trash from './raw/trash'
 import Sun from './raw/sun'
 import Moon from './raw/moon'
+import X from './raw/x'
 
 export const icons = {
   star: Star,
@@ -11,5 +12,6 @@ export const icons = {
   movie: Movie,
   trash: Trash,
   sun: Sun,
-  moon: Moon
+  moon: Moon,
+  x: X
 }
