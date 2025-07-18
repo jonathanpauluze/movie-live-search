@@ -33,11 +33,11 @@ export default function Home() {
   }
 
   async function handleSelect(movie: TMDBMovie) {
-    setSearchTerm(movie.title)
     setIsRedirecting(true)
 
     await openIMDBPage(movie)
 
+    setSearchTerm('')
     setIsRedirecting(false)
   }
 
