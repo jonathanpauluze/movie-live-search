@@ -1,0 +1,182 @@
+.dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  width: 100%;
+  background: var(--color-background);
+  border: 1px solid var(--color-neutral-soft);
+  border-radius: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem;
+  max-height: 320px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 10;
+  box-sizing: border-box;
+  scrollbar-gutter: stable;
+
+  li {
+    position: relative;
+    padding: 0.75rem 3rem 0.75rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    row-gap: 0.25rem;
+    overflow: hidden;
+    transition: background 0.2s ease;
+
+    p {
+      display: inline-block;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &:hover {
+      background-color: var(--color-neutral-hover);
+
+      .favoriteButton {
+        opacity: 1;
+      }
+    }
+
+    &.highlighted {
+      background-color: var(--color-neutral-hover);
+
+      .favoriteButton {
+        opacity: 1;
+      }
+    }
+
+    &.exactMatchItem {
+      background-color: var(--color-primary-softest);
+      padding: 1rem;
+      flex-wrap: wrap;
+      white-space: normal;
+
+      &:hover {
+        background-color: var(--color-primary-softest-hover);
+      }
+
+      &.highlighted {
+        background-color: var(--color-primary-softest-hover);
+      }
+
+      .exactMatchContent {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .exactMatchContentInfo {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        .title {
+          display: flex;
+          flex-wrap: wrap;
+          max-width: 100%;
+          gap: 0.5rem;
+          font-weight: 600;
+          color: var(--color-primary-base);
+          overflow: hidden;
+
+          strong {
+            display: inline-block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 95%;
+          }
+
+          span {
+            font-weight: 400;
+            color: var(--color-neutral-soft);
+            white-space: nowrap;
+          }
+        }
+
+        .genresWrapper {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .genreTag {
+          display: inline-block;
+          border: 1px solid var(--color-neutral-soft);
+          background: var(--color-neutral-hover);
+          padding: 0.25rem 0.5rem;
+          font-size: var(--font-size-mini);
+          font-weight: 600;
+          color: var(--color-text-neutral);
+          border-radius: 999px;
+        }
+      }
+
+      .favoriteButton {
+        top: 0.5rem;
+        right: 0.5rem;
+        transform: translateY(0);
+      }
+    }
+  }
+
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-neutral);
+    border-radius: 0.25rem;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+.favoriteButton {
+  flex-shrink: 0;
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  z-index: 1;
+
+  .notFavorite {
+    color: var(--color-neutral-soft);
+  }
+
+  .favorite {
+    color: var(--color-warning);
+  }
+
+  &:hover .favorite {
+    color: var(--color-warning-hover);
+  }
+}
+
+.favoriteButton.favorited {
+  opacity: 1;
+}

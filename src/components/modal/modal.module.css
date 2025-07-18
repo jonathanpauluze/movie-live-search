@@ -1,0 +1,68 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: var(--color-backdrop);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modalBase {
+  position: relative;
+  width: 100%;
+  margin: 0 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1.5rem;
+  border-radius: 0.5rem;
+  background: var(--color-background);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+
+  @media (min-width: 768px) {
+    max-width: 450px;
+    margin: 0;
+  }
+}
+
+.closeBtn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.25rem;
+  background: transparent;
+  color: var(--color-neutral);
+  cursor: pointer;
+  z-index: 10;
+}
+
+.title {
+  position: relative;
+  font-size: var(--font-size-md);
+  color: var(--color-primary-heavy);
+  margin-bottom: 1rem;
+  padding-right: 1.5rem;
+  padding-bottom: 0.5rem;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    display: block;
+    margin-top: 0.5rem;
+    width: 100%;
+    height: 1px;
+    background-color: var(--color-neutral-soft);
+    opacity: 0.4;
+  }
+}

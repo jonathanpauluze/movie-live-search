@@ -1,0 +1,29 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spinner {
+  border-width: 0.25rem;
+  border-style: solid;
+  border-color: var(--color-neutral-soft);
+  border-top-color: var(--color-primary-base);
+  border-radius: 50%;
+  animation: var(--animation-spin);
+
+  &[data-size='sm'] {
+    width: 18px;
+    height: 18px;
+  }
+
+  &[data-size='md'] {
+    width: 24px;
+    height: 24px;
+  }
+
+  &[data-size='lg'] {
+    width: 32px;
+    height: 32px;
+  }
+}

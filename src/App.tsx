@@ -1,8 +1,15 @@
+import { Header } from './components/header'
+import Home from '@/pages/home'
+import { useTheme } from './hooks/use-theme'
+
 function App() {
+  useTheme()
+
   return (
-    <>
-      <h1>Me contrata, Planne! :)</h1>
-    </>
+    <div>
+      <Header />
+      <Home />
+    </div>
   )
 }
 

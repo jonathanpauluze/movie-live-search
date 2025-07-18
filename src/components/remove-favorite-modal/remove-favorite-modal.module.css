@@ -1,0 +1,35 @@
+.text {
+  color: var(--color-text-neutral);
+
+  span {
+    color: var(--color-primary-base);
+    font-weight: 600;
+  }
+}
+
+.buttonsWrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+
+  button {
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.75rem 1rem;
+    font-size: var(--font-size-xs);
+    color: white;
+    transition: all 0.2s;
+    cursor: pointer;
+    background: var(--color-neutral);
+
+    &:hover {
+      opacity: 0.9;
+    }
+
+    &.removeBtn {
+      background: var(--color-danger);
+    }
+  }
+}

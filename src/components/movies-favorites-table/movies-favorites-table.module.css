@@ -1,0 +1,35 @@
+.wrapper {
+  max-height: calc(100dvh - 16rem);
+
+  @media (min-width: 768px) {
+    max-height: 600px;
+  }
+}
+
+.title {
+  min-width: 300px;
+}
+
+.genres {
+  min-width: 300px;
+}
+
+.removeBtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  font-size: var(--font-size-xs);
+  color: var(--color-danger);
+  transition: all 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--color-danger);
+    color: #fff;
+  }
+}

@@ -1,0 +1,31 @@
+.wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  height: 4rem;
+  box-shadow: var(--shadow-lg);
+  z-index: 20;
+  background-color: var(--color-background);
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: var(--container-width);
+  padding: var(--container-padding);
+  margin: 0 auto;
+}
+
+.logo {
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+  color: var(--color-primary-base);
+
+  @media (min-width: 768px) {
+    font-size: var(--font-size-xl);
+  }
+}

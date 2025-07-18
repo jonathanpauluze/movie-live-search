@@ -1,0 +1,11 @@
+.wrapper {
+  max-height: calc(100dvh - 16rem);
+
+  @media (min-width: 768px) {
+    max-height: 600px;
+  }
+}
+
+.title {
+  min-width: 300px;
+}
