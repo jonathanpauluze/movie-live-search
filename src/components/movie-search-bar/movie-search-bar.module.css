@@ -14,7 +14,6 @@
 .inputWrapper {
   position: relative;
   width: 100%;
-  overflow: hidden;
 }
 
 .autocompleteOverlay {
@@ -31,6 +30,10 @@
   color: var(--color-neutral-soft);
   pointer-events: none;
   white-space: pre;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  z-index: 2;
 }
 
 .userInput {

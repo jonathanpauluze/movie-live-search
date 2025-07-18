@@ -9,12 +9,15 @@
   box-shadow: var(--shadow-lg);
   z-index: 20;
   background-color: var(--color-background);
+}
 
-  div {
-    width: var(--container-width);
-    padding: var(--container-padding);
-    margin: 0 auto;
-  }
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: var(--container-width);
+  padding: var(--container-padding);
+  margin: 0 auto;
 }
 
 .logo {

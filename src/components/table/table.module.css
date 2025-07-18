@@ -3,6 +3,18 @@
   width: 100%;
   overflow: auto;
 
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+    height: 0.5rem;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-neutral);
+    border-radius: 0.25rem;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
   table {
     width: 100%;
   }
