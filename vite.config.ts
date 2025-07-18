@@ -29,6 +29,8 @@ export default defineConfig({
         'src/components/**/*.{tsx,ts}',
         'src/hooks/**/*.{tsx,ts}',
         'src/utils/**/*.{tsx,ts}',
+        'src/lib/**/*.{tsx,ts}',
+        'src/services/**/*.{tsx,ts}',
         'src/pages/**/*.{tsx,ts}'
       ]
     }
