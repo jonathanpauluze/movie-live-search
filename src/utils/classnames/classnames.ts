@@ -1,4 +1,4 @@
-type ClassValue = string | Record<string, boolean> | undefined | null | false
+type ClassValue = string | Record<string, unknown> | undefined | null | false
 
 export function classnames(...args: ClassValue[]): string {
   return args
