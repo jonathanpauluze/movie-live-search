@@ -13,7 +13,7 @@ import type { TMDBMovie } from '@/services/tmdb/types'
 
 type MoviesFavoritesTableProps = {
   movies: TMDBMovie[]
-  onRemove?: (id: number) => void
+  onRemove?: (movie: TMDBMovie) => void
 }
 
 export function MoviesFavoritesTable(
@@ -47,7 +47,7 @@ export function MoviesFavoritesTable(
             <TableCell>
               <button
                 className={styles.removeBtn}
-                onClick={() => onRemove?.(movie.id)}
+                onClick={() => onRemove?.(movie)}
               >
                 <Icon name="trash" size="sm" />
                 Remover
