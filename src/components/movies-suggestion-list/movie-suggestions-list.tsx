@@ -55,7 +55,7 @@ export function MovieSuggestionsList(
   }, [highlightedIndex])
 
   return (
-    <ul className={styles.dropdown} ref={listRef}>
+    <ul className={styles.dropdown} ref={listRef} tabIndex={-1}>
       {suggestions.map((suggestion, index) => {
         const isExactMatch = suggestion.id === exactMatch?.id
         const isLastItem = index === suggestions.length - 1
@@ -106,6 +106,7 @@ export function MovieSuggestionsList(
               className={classnames(styles.favoriteButton, {
                 [styles.favorited]: isFavorite(suggestion.id)
               })}
+              tabIndex={-1}
               onClick={(e) => {
                 e.stopPropagation()
                 toggle(suggestion)
