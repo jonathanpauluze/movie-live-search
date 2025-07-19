@@ -5,14 +5,14 @@ import type { TMDBMovie } from '@/services/tmdb'
 
 let favorites: TMDBMovie[] =
   loadFromStorage<TMDBMovie[]>(STORAGE_FAVORITES_KEY) ?? []
-const listeners = new Set<() => void>()
+const listeners = new Set<VoidFunction>()
 
 function notify() {
   listeners.forEach((listener) => listener())
 }
 
 export function useFavorites() {
-  const subscribe = (callback: () => void) => {
+  const subscribe = (callback: VoidFunction) => {
     listeners.add(callback)
     return () => listeners.delete(callback)
   }
