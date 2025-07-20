@@ -1,10 +1,9 @@
 import { useState, useRef, type KeyboardEvent, type ChangeEvent } from 'react'
-import { MovieSuggestionsList } from '../movies-suggestion-list'
-import { NoResultsMessage } from '../no-results-message'
+import { MovieSuggestionsList } from '@/components/movies-suggestion-list'
 import { useClickOutside } from '@/hooks/use-click-outside'
 import { useFavorites } from '@/hooks/use-favorites'
-import { normalizeText } from '@/utils/normalize-text'
 import { classnames } from '@/utils/classnames'
+import { normalizeText } from '@/utils/normalize-text'
 import styles from './movie-search-bar.module.css'
 import type { TMDBMovie } from '@/services/tmdb'
 
@@ -57,7 +56,6 @@ export function MovieSearchBar(props: Readonly<MovieSearchBarProps>) {
   const normalizedSuggestion = normalizeText(allSuggestions[0]?.title || '')
 
   const hasSuggestions = !isLoading && allSuggestions?.length > 0
-  const hasNoResults = !isLoading && !hasSuggestions && normalizedInput !== ''
   const hasMatchingSuggestion =
     normalizedSuggestion?.startsWith(normalizedInput)
   const hasSuggestionEqualsTheSearch = normalizedSuggestion === normalizedInput
@@ -202,8 +200,6 @@ export function MovieSearchBar(props: Readonly<MovieSearchBarProps>) {
           onLastItemVisible={onLastItemVisible}
         />
       ) : null}
-
-      {hasNoResults ? <NoResultsMessage query={value} /> : null}
     </div>
   )
 }
