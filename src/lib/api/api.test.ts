@@ -62,4 +62,47 @@ describe('api', () => {
       })
     )
   })
+
+  it('sends PUT body and method correctly', async () => {
+    const body = { name: 'Updated Name' }
+
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve({ success: true })
+    })
+
+    await api.put('/users/1', body)
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      `${BASE_URL}/users/1`,
+      expect.objectContaining({
+        method: 'PUT',
+        body: JSON.stringify(body),
+        headers: expect.objectContaining({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${TOKEN}`
+        })
+      })
+    )
+  })
+
+  it('sends DELETE with correct method and headers', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve({ deleted: true })
+    })
+
+    await api.delete('/users/1')
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      `${BASE_URL}/users/1`,
+      expect.objectContaining({
+        method: 'DELETE',
+        headers: expect.objectContaining({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${TOKEN}`
+        })
+      })
+    )
+  })
 })
