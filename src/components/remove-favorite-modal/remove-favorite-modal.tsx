@@ -1,4 +1,4 @@
-import { Modal } from '../modal'
+import { Modal } from '@/components/modal'
 import styles from './remove-favorite-modal.module.css'
 
 type RemoveFavoriteModalProps = {
