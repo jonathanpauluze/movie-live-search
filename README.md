@@ -1,69 +1,110 @@
-# React + TypeScript + Vite
+# 🎬 Planne - Movie Live Search
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação desenvolvida como parte do teste técnico de front-end da [**Planne**](https://www.planne.com.br/).  
+Permite pesquisar filmes utilizando a API do TMDb, favoritar resultados e acessar o link para o IMDB.
 
-Currently, two official plugins are available:
+## 📸 Preview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+![Preview da aplicação](./public/preview.png)
 
-## Expanding the ESLint configuration
+## 🚀 Tecnologias utilizadas
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **React** + **Vite**
+- **TypeScript**
+- **CSS Modules**
+- **Vitest** + **Testing Library**
+- [**TMDB API**](https://developer.themoviedb.org/)
+- **Docker + Docker Compose**
+- **Makefile** para automação
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## ⚙️ Como executar o projeto
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### ✅ Pré-requisitos
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+- [Token de leitura da API do TMDB (Token Bearer)](https://www.themoviedb.org/settings/api)
+
+---
+
+### 📦 Setup automatizado com Makefile
+
+```bash
+make setup TMDB_TOKEN=seu-token-aqui
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Esse comando:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- Cria o arquivo `.env.local`
+- Adiciona a chave da API do TMDb
+- Executa o projeto com Docker
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+> Se não informar `TMDB_TOKEN`, será usado o valor padrão `seu-token-aqui`.
+
+Para executar o projeto
+
+```bash
+make run
 ```
+
+---
+
+### 💡 Executando manualmente (sem Makefile)
+
+#### 1. Criar o arquivo `.env.local`
+
+```env
+VITE_TMDB_API_URL=https://api.themoviedb.org/3
+TMDB_TOKEN=seu-token-aqui
+```
+
+Substitua `seu-token-aqui` pela sua chave da API do TMDb.
+
+---
+
+#### 2. Executar com Docker
+
+```bash
+docker compose build
+docker compose up
+```
+
+Acesse em: [http://localhost:5173](http://localhost:5173)
+
+---
+
+#### 3. Executar localmente (sem Docker)
+
+Se você **já tem o `pnpm` instalado**:
+
+```bash
+pnpm install
+pnpm dev
+```
+
+Se **não tem `pnpm`**, use:
+
+```bash
+corepack enable
+corepack prepare pnpm@8.15.6 --activate
+pnpm install
+pnpm dev
+```
+
+## 🧪 Testes
+
+Para rodar os testes unitários:
+
+```bash
+pnpm test:unit
+```
+
+Para visualizar a cobertura de testes:
+
+```bash
+pnpm test:coverage
+```
+
+## 👨‍💻 Autor
+
+Desenvolvido com ❤️ por [Jonathan Pauluze](https://linkedin.com/in/jonathanpauluze)
