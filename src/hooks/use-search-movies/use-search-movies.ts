@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react'
-import { TMDBClient } from '@/services/tmdb/client'
+import { TMDBClient } from '@/services/tmdb'
 import { formatMovieResult } from '@/utils/format-movie-result'
-import { useDebouncedValue } from './use-debounced-value'
-import { useGenres } from './use-genres'
-import type { TMDBMovie } from '@/services/tmdb/types'
+import { useDebouncedValue } from '@/hooks/use-debounced-value'
+import { useGenres } from '@/hooks/use-genres'
+import type { TMDBMovie } from '@/services/tmdb'
 
 export function useSearchMovies(term: string) {
   const [isLoading, setIsLoading] = useState(true)

@@ -7,9 +7,9 @@ import {
   TableCell
 } from '@/components/table'
 import { PosterImage } from '@/components/poster-image'
-import { Icon } from '../icon'
+import { Icon } from '@/components/icon'
 import styles from './movies-favorites-table.module.css'
-import type { TMDBMovie } from '@/services/tmdb/types'
+import type { TMDBMovie } from '@/services/tmdb'
 
 type MoviesFavoritesTableProps = {
   movies: TMDBMovie[]

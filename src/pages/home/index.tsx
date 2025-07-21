@@ -11,9 +11,9 @@ import { RedirectModal } from '@/components/redirect-modal'
 import { RemoveFavoriteModal } from '@/components/remove-favorite-modal'
 import { Spinner } from '@/components/spinner'
 
-import styles from './home.module.css'
-import type { TMDBMovie } from '@/services/tmdb/types'
 import { openIMDBPage } from '@/utils/open-imdb-page'
+import styles from './home.module.css'
+import type { TMDBMovie } from '@/services/tmdb'
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('')

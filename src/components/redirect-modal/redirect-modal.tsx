@@ -1,4 +1,4 @@
-import { Modal } from '../modal'
+import { Modal } from '@/components/modal'
 import styles from './redirect-modal.module.css'
 
 type RedirectModalProps = {

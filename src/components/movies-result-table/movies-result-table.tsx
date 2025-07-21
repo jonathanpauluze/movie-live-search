@@ -8,7 +8,7 @@ import {
 } from '@/components/table'
 import { PosterImage } from '@/components/poster-image'
 import styles from './movies-result-table.module.css'
-import type { TMDBMovie } from '@/services/tmdb/types'
+import type { TMDBMovie } from '@/services/tmdb'
 import type { Ref } from 'react'
 
 type MoviesResultTableProps = {

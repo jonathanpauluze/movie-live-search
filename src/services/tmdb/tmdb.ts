@@ -4,7 +4,7 @@ import type {
   TMDBGenresResponse,
   TMDBGenre,
   TMDBExternalIdsResponse
-} from './types'
+} from './tmdb.types'
 
 export class TMDBClient {
   static async searchMovie(query: string, page = 1) {

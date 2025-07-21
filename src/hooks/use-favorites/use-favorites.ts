@@ -1,18 +1,18 @@
 import { useSyncExternalStore } from 'react'
 import { loadFromStorage, saveToStorage } from '@/utils/local-storage'
 import { STORAGE_FAVORITES_KEY } from '@/constants/storage'
-import type { TMDBMovie } from '@/services/tmdb/types'
+import type { TMDBMovie } from '@/services/tmdb'
 
 let favorites: TMDBMovie[] =
   loadFromStorage<TMDBMovie[]>(STORAGE_FAVORITES_KEY) ?? []
-const listeners = new Set<() => void>()
+const listeners = new Set<VoidFunction>()
 
 function notify() {
   listeners.forEach((listener) => listener())
 }
 
 export function useFavorites() {
-  const subscribe = (callback: () => void) => {
+  const subscribe = (callback: VoidFunction) => {
     listeners.add(callback)
     return () => listeners.delete(callback)
   }
