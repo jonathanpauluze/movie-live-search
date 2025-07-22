@@ -7,6 +7,7 @@ import { useIntersectionObserver } from '@/hooks/use-intersection-observer'
 import { MovieSearchBar } from '@/components/movie-search-bar'
 import { MoviesFavoritesTable } from '@/components/movies-favorites-table'
 import { MoviesResultTable } from '@/components/movies-result-table'
+import { NoResultsMessage } from '@/components/no-results-message'
 import { RedirectModal } from '@/components/redirect-modal'
 import { RemoveFavoriteModal } from '@/components/remove-favorite-modal'
 import { Spinner } from '@/components/spinner'
@@ -61,7 +62,16 @@ export default function Home() {
 
       {searchTerm ? (
         <section className={styles.resultSection}>
-          <MoviesResultTable movies={results} ref={loaderRef} />
+          {isLoading ? (
+            <div className={styles.loadingWrapper}>
+              <Spinner />
+              <p>Carregando resultados...</p>
+            </div>
+          ) : results?.length > 0 ? (
+            <MoviesResultTable movies={results} ref={loaderRef} />
+          ) : (
+            <NoResultsMessage query={searchTerm} />
+          )}
 
           {isFetchingNextPage ? (
             <div className={styles.loadingWrapper}>
